@@ -1,0 +1,12 @@
+
+.vs/
+
+x64/
+
+*.sln
+
+GameEngine.vcxproj
+
+GameEngine.vcxproj.filters
+
+*.user
