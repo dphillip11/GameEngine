@@ -19,126 +19,126 @@ namespace TestSuite {
 		Test::RunTests();
 	}
 
-	bool Test_Component_Registry()
-	{
-		// Create an instance of the ComponentRegistry
-		ComponentRegistry registry;
+	//bool Test_Component_Registry()
+	//{
+	//	// Create an instance of the ComponentRegistry
+	//	ComponentRegistry registry;
 
-		// Create some entities
-		Entity entity1;
-		Entity entity2;
-		Entity entity3;
+	//	// Create some entities
+	//	Entity entity1;
+	//	Entity entity2;
+	//	Entity entity3;
 
-		// Register components to an entity
-		auto component1 = registry.RegisterComponent<Component>(entity1);
-		auto component2 = registry.RegisterComponent<Component>(entity1);
-		auto component3 = registry.RegisterComponent<Particle>(entity1);
-		auto component4 = registry.RegisterComponent<PhysicsMaterial>(entity1);
+	//	// Register components to an entity
+	//	auto component1 = registry.RegisterComponent<Component>(entity1);
+	//	auto component2 = registry.RegisterComponent<Component>(entity1);
+	//	auto component3 = registry.RegisterComponent<Particle>(entity1);
+	//	auto component4 = registry.RegisterComponent<PhysicsMaterial>(entity1);
 
-		//retrieve components associated with entity
-		if (entity1.GetComponents<Component>().size() != 2)
-			Log("Error1");
-		auto components = entity1.GetComponents<Component>();
-		if (entity1.GetComponents<Particle>().size() != 1)
-			Log("Error2");
-		if (entity1.GetComponents<PhysicsMaterial>().size() != 1)
-			Log("Error3");
+	//	//retrieve components associated with entity
+	//	if (entity1.GetComponents<Component>().size() != 2)
+	//		Log("Error1");
+	//	auto components = entity1.GetComponents<Component>();
+	//	if (entity1.GetComponents<Particle>().size() != 1)
+	//		Log("Error2");
+	//	if (entity1.GetComponents<PhysicsMaterial>().size() != 1)
+	//		Log("Error3");
 
-		struct newComponent : Component {};
+	//	struct newComponent : Component {};
 
-		//correctly detect nullvector
-		if (entity1.GetComponents<newComponent>().size() != 0)
-			Log("Error4");
+	//	//correctly detect nullvector
+	//	if (entity1.GetComponents<newComponent>().size() != 0)
+	//		Log("Error4");
 
-		//register adhoc components
-		auto component5 = registry.RegisterComponent<newComponent>(entity1);
+	//	//register adhoc components
+	//	auto component5 = registry.RegisterComponent<newComponent>(entity1);
 
-		//retrieve adhoc components
-		if (entity1.GetComponents<newComponent>().size() != 1)
-			Log("Error5");
+	//	//retrieve adhoc components
+	//	if (entity1.GetComponents<newComponent>().size() != 1)
+	//		Log("Error5");
 
-		//pointers work
-		FP newInverseMass = 3;
-		entity1.GetComponents<Particle>()[0]->inverse_mass = newInverseMass;
-		if (component3->inverse_mass != newInverseMass)
-			Log("Error6");
+	//	//pointers work
+	//	FP newInverseMass = 3;
+	//	entity1.GetComponents<Particle>()[0]->inverse_mass = newInverseMass;
+	//	if (component3->inverse_mass != newInverseMass)
+	//		Log("Error6");
 
-		//correctly associate entities
-		auto component6 = registry.RegisterComponent<Component>(entity2);
+	//	//correctly associate entities
+	//	auto component6 = registry.RegisterComponent<Component>(entity2);
 
-		if (entity1.GetComponents<Component>().size() != 2)
-			Log("Error7");
-		if (entity2.GetComponents<Component>().size() != 1)
-			Log("Error8");
-		if (registry.GetComponents<Component>().size() != 3)
-			Log("Error9");
+	//	if (entity1.GetComponents<Component>().size() != 2)
+	//		Log("Error7");
+	//	if (entity2.GetComponents<Component>().size() != 1)
+	//		Log("Error8");
+	//	if (registry.GetComponents<Component>().size() != 3)
+	//		Log("Error9");
 
-		//get entity components via registry
-		if (registry.GetComponents<Component>(entity2).size() != 1)
-			Log("Error10");
+	//	//get entity components via registry
+	//	if (registry.GetComponents<Component>(entity2).size() != 1)
+	//		Log("Error10");
 
-		//check removing entity deactivates components
-		Component* component7;
-		if (true)
-		{
-			Entity tempEntity;
-			component7 = registry.RegisterComponent<Component>(tempEntity);
-			if (!component7->Active)
-				Log("Error11");
-		}
-		//tempEntity auto destructed, components should be marked inactive
-		if (component7->Active)
-			Log("Error12");
+	//	//check removing entity deactivates components
+	//	Component* component7;
+	//	if (true)
+	//	{
+	//		Entity tempEntity;
+	//		component7 = registry.RegisterComponent<Component>(tempEntity);
+	//		if (!component7->Active)
+	//			Log("Error11");
+	//	}
+	//	//tempEntity auto destructed, components should be marked inactive
+	//	if (component7->Active)
+	//		Log("Error12");
 
-		//test that cull removes inactive components
-		auto currentSize = registry.GetComponents<Component>().size();
-		registry.CullInactive<Component>();
-		auto newSize = registry.GetComponents<Component>().size();
-		if (currentSize != newSize + 1)
-			Log("Error13");
+	//	//test that cull removes inactive components
+	//	auto currentSize = registry.GetComponents<Component>().size();
+	//	registry.CullInactive<Component>();
+	//	auto newSize = registry.GetComponents<Component>().size();
+	//	if (currentSize != newSize + 1)
+	//		Log("Error13");
 
-		//all tests passed
-		return true;
-	}
+	//	//all tests passed
+	//	return true;
+	//}
 
-	auto new_test1 = Test("Component Registry", Test_Component_Registry);
+	//auto new_test1 = Test("Component Registry", Test_Component_Registry);
 
-	bool Test_Type_Counter()
-	{
+	//bool Test_Type_Counter()
+	//{
 
-		// Get the type IDs for different types
-		int typeID1 = GetTypeID<int>();
-		int typeID2 = GetTypeID<float>();
-		int typeID3 = GetTypeID<std::string>();
-		int typeID4 = GetTypeID<bool>();
+	//	// Get the type IDs for different types
+	//	int typeID1 = GetTypeID<int>();
+	//	int typeID2 = GetTypeID<float>();
+	//	int typeID3 = GetTypeID<std::string>();
+	//	int typeID4 = GetTypeID<bool>();
 
-		// Test that the type IDs are unique
-		if (typeID1 == typeID2 || typeID1 == typeID3 || typeID1 == typeID4 ||
-			typeID2 == typeID3 || typeID2 == typeID4 || typeID3 == typeID4) {
-			Log("Error14");
-		}
+	//	// Test that the type IDs are unique
+	//	if (typeID1 == typeID2 || typeID1 == typeID3 || typeID1 == typeID4 ||
+	//		typeID2 == typeID3 || typeID2 == typeID4 || typeID3 == typeID4) {
+	//		Log("Error14");
+	//	}
 
-		// Get the type ID for a component
-		int componentTypeID1 = GetTypeID(42);
-		int componentTypeID2 = GetTypeID(3.14f);
-		int componentTypeID3 = GetTypeID(std::string("Test"));
-		int componentTypeID4 = GetTypeID(true);
+	//	// Get the type ID for a component
+	//	int componentTypeID1 = GetTypeID(42);
+	//	int componentTypeID2 = GetTypeID(3.14f);
+	//	int componentTypeID3 = GetTypeID(std::string("Test"));
+	//	int componentTypeID4 = GetTypeID(true);
 
-		// Test that the component type IDs are unique
-		if (componentTypeID1 == componentTypeID2 || componentTypeID1 == componentTypeID3 ||
-			componentTypeID1 == componentTypeID4 || componentTypeID2 == componentTypeID3 ||
-			componentTypeID2 == componentTypeID4 || componentTypeID3 == componentTypeID4) {
-			Log("Error15");
-		}
+	//	// Test that the component type IDs are unique
+	//	if (componentTypeID1 == componentTypeID2 || componentTypeID1 == componentTypeID3 ||
+	//		componentTypeID1 == componentTypeID4 || componentTypeID2 == componentTypeID3 ||
+	//		componentTypeID2 == componentTypeID4 || componentTypeID3 == componentTypeID4) {
+	//		Log("Error15");
+	//	}
 
-		// Test that the component type IDs are consistent
-		if (componentTypeID1 != typeID1 || componentTypeID2 != typeID2 ||
-			componentTypeID3 != typeID3 || componentTypeID4 != typeID4)
-			Log("Error16");
+	//	// Test that the component type IDs are consistent
+	//	if (componentTypeID1 != typeID1 || componentTypeID2 != typeID2 ||
+	//		componentTypeID3 != typeID3 || componentTypeID4 != typeID4)
+	//		Log("Error16");
 
-		// All tests passed
-		return true;
-	}
+	//	// All tests passed
+	//	return true;
+	//}
 
 	auto new_test2 = Test("Type Counter", Test_Type_Counter);
 

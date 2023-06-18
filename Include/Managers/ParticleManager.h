@@ -5,9 +5,9 @@
 class ParticleManager
 {
 private:
-	std::vector<Particle>& m_particle_registry;
+	Scene& m_scene;
 public:
-	ParticleManager(std::vector<Particle>& particle_registry) :m_particle_registry(particle_registry) {}
+	ParticleManager(Scene& scene) :m_scene(scene) {}
 	// updates velocity based on acceleration and time
 	void IntegrateAcceleration(FP_LONG dt, Particle& particle);
 	// update position based on velocity and time

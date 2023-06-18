@@ -1,6 +1,6 @@
 #include "PCH/pch.h"
 #include "Registries/MeshRegistry.h"
-#include "Managers/MeshManager.h"
+#include "Managers/BufferManager.h"
 #include "Tools/Obj.h"
 
 void MeshRegistry::ParseFile(const char* filepath, Mesh& mesh) {
@@ -14,21 +14,21 @@ void MeshRegistry::ParseFile(const char* filepath, Mesh& mesh) {
 
 	//vertices
 	glBindVertexArray(mesh.VAO);
-	MeshManager::setVertices(mesh, mesh_data.vertices);
-	MeshManager::setAttributes(mesh, 0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(0));
+	BufferManager::setVertices(&mesh_data.vertices[0], mesh_data.vertices.size(), mesh.VAO, mesh.VBO);
+	BufferManager::setAttributes(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(0));
 
 	//normals
 	if (mesh_data.normalMap.size() > 0)
 	{
-		MeshManager::setVertices(mesh, mesh_data.normalMap);
-		MeshManager::setAttributes(mesh, 1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(0));
+		BufferManager::setVertices(&mesh_data.normalMap[0], mesh_data.normalMap.size(), mesh.VAO, mesh.VBO_normal);
+		BufferManager::setAttributes(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(0));
 	}
 
 	//texturemap
 	if (mesh_data.textureMap.size() > 0)
 	{
-		MeshManager::setVertices(mesh, mesh_data.textureMap);
-		MeshManager::setAttributes(mesh, 2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(0));
+		BufferManager::setVertices(&mesh_data.textureMap[0], mesh_data.textureMap.size(), mesh.VAO, mesh.VBO_texture);
+		BufferManager::setAttributes(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(0));
 	}
 
 }

@@ -1,5 +1,5 @@
 #pragma once
-#include "Registries/ComponentRegistry.h"
+#include "Entity/Entity.h"
 #include "Registries/ForceRegistry.h"
 #include "Managers/ParticleManager.h"
 #include "Physics/CollisionDetection.h"
@@ -10,6 +10,7 @@ class Scene
 {
 public:
 	std::unique_ptr<ComponentRegistry> componentRegistry = nullptr;
+	std::unique_ptr<EntityRegistry> entityRegistry = nullptr;
 	std::unique_ptr <ParticleManager> particleManager = nullptr;
 	std::unique_ptr <ForceRegistry> forceRegistry = nullptr;
 	std::unique_ptr <CollisionDetection> collisionDetection = nullptr;
@@ -18,10 +19,11 @@ public:
 
 	Scene() {
 		componentRegistry = std::make_unique<ComponentRegistry>();
-		particleManager = std::make_unique<ParticleManager>(componentRegistry->GetComponentVector<Particle>());
+		entityRegistry = std::make_unique<EntityRegistry>();
 		forceRegistry = std::make_unique<ForceRegistry>();
-		collisionDetection = std::make_unique<CollisionDetection>(componentRegistry->GetComponentVector<Particle>());
-		particleRenderer = std::make_unique <ParticleRenderer>(componentRegistry->GetComponentVector<Particle>());
+		particleManager = std::make_unique<ParticleManager>(*this);
+		collisionDetection = std::make_unique<CollisionDetection>(*this);
+		particleRenderer = std::make_unique <ParticleRenderer>(*this);
 	}
 
 	void Update(FP_LONG dt)

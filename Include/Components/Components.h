@@ -14,6 +14,18 @@ struct PhysicsMaterial :Component
 	FP friction = 0;
 };
 
+struct Particle_position
+{
+	Vector3 pos = 0;
+};
+
+struct Particle_size
+{
+	float size = 1;
+};
+
+
+
 struct Particle :Component
 {
 	Vector3 position = 0;
