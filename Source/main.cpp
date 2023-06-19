@@ -9,30 +9,29 @@ int main() {
 	Window window(1920, 1080, "window");
 
 	Scene scene;
-	Entity scene_entity;
 	auto g = GravityForce(Vector3(0, -10, 0));
 	auto buoyancy = BuoyantForce(0, 5);
 	for (int i = 0; i < 10; i++)
 	{
-		Particle* p = scene.componentRegistry->RegisterComponent<Particle>(scene_entity);
+		EntityRef particle = scene.particleManager->NewParticle();
 		if (i == 4)
 		{
 			auto drag = DragForce(1, 0.2);
-			scene.forceRegistry->AddForceGenerator(&drag, p);
+			scene.forceRegistry->AddForceGenerator(&drag, particle);
 		}
-		p->position = Vector3(5 * i - 25, 0, 0);
-		p->radius = 1 + (i * 0.1f);
-		scene.forceRegistry->AddForceGenerator(&g, p);
-		scene.forceRegistry->AddForceGenerator(&buoyancy, p);
+		particle.get<Particle_Position>().value = Vector3(5 * i - 25, 0, 0);
+		particle.get<Particle_Position>().value = 1 + (i * 0.1f);
+		scene.forceRegistry->AddForceGenerator(&g, particle);
+		scene.forceRegistry->AddForceGenerator(&buoyancy, particle);
 	};
-	Particle* p1 = scene.componentRegistry->RegisterComponent<Particle>(scene_entity);
-	Particle* p2 = scene.componentRegistry->RegisterComponent<Particle>(scene_entity);
+	EntityRef p1 = scene.particleManager->NewParticle();
+	EntityRef p2 = scene.particleManager->NewParticle();
 	auto spring = SpringForce(p2, 9, 6);
-	p1->velocity = (0, 0, 1);
-	p1->position = { 10,0,0 };
-	p2->position = { -10,5,0 };
-	p2->radius = 5;
-	p2->inverse_mass = 0.5;
+	p1.get<Particle_Velocity>().value = (0, 0, 1);
+	p1.get<Particle_Position>().value = { 10,0,0 };
+	p2.get<Particle_Velocity>().value = { -10,5,0 };
+	p2.get<Particle_Position>().value = 5;
+	p2.get<Particle_InverseMass>().value = 0.5;
 	scene.forceRegistry->AddForceGenerator(&spring, p1);
 	scene.forceRegistry->AddForceGenerator(&buoyancy, p2);
 	scene.forceRegistry->AddForceGenerator(&g, p2);

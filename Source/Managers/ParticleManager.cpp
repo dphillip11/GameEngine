@@ -2,26 +2,49 @@
 #include "Managers/ParticleManager.h"
 #include "Registries/ComponentRegistry.h"
 
-
+EntityRef ParticleManager::NewParticle()
+{
+	EntityRef entity_ref = m_scene.entityRegistry->CreateEntity(*m_scene.componentRegistry);
+	auto& entity = entity_ref.get();
+	entity.EmplaceComponent<Particle_Position>();
+	entity.EmplaceComponent<Particle_Radius>();
+	entity.EmplaceComponent<Particle_InverseMass>();
+	entity.EmplaceComponent<Particle_Velocity>();
+	entity.EmplaceComponent<Particle_Acceleration>();
+	entity.EmplaceComponent<Particle_Restitution>();
+	entity.EmplaceComponent<Particle_Friction>();
+	return entity_ref;
+}
 
 // updates velocity based on acceleration and time
-void ParticleManager::IntegrateAcceleration(FP_LONG dt, Particle& particle)
+void ParticleManager::IntegrateAcceleration(FP_LONG dt, Particle_Velocity& velocity, Particle_Acceleration& acceleration)
 {
-	particle.velocity += (particle.acceleration * dt);
-	particle.acceleration = Vector3(0);
+	velocity.value += (acceleration.value * dt);
+	acceleration.value = Vector3(0);
 }
 // update position based on velocity and time
-void ParticleManager::IntegrateVelocity(FP_LONG dt, Particle& particle)
+void ParticleManager::IntegrateVelocity(FP_LONG dt, Particle_Position& position, Particle_Velocity& velocity)
 {
-	particle.position += (particle.velocity * dt);
+	position.value += (velocity.value * dt);
 }
 
 // updates particle positions based on position, velocityand acceleration
 void ParticleManager::UpdateAllParticles(FP_LONG dt)
 {
-	for (auto& particle : m_particle_registry)
+	auto& velocities = m_scene.componentRegistry->GetComponentsByType<Particle_Velocity>();
+	auto& accelerations = m_scene.componentRegistry->GetComponentsByType<Particle_Acceleration>();
+	auto& positions = m_scene.componentRegistry->GetComponentsByType<Particle_Position>();
+
+	if (velocities.size() != accelerations.size() || positions.size() != velocities.size())
 	{
-		IntegrateAcceleration(dt, particle);
-		IntegrateVelocity(dt, particle);
+		throw(std::runtime_error("ParticleManager:: particle vectors must be the same size"));
+	}
+
+	auto number = velocities.size();
+
+	for (int i = 0; i < number; i++)
+	{
+		IntegrateAcceleration(dt, velocities[i], accelerations[i]);
+		IntegrateVelocity(dt, positions[i], velocities[i]);
 	}
 }

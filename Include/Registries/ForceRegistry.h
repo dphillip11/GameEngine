@@ -7,10 +7,10 @@
 class ForceRegistration {
 public:
 	ForceGenerator* generator;
-	Particle* particle;
+	EntityRef entity;
 
-	ForceRegistration(ForceGenerator* gen, Particle* particle)
-		: generator(gen), particle(particle) {}
+	ForceRegistration(ForceGenerator* gen, EntityRef new_entity)
+		: generator(gen), entity(new_entity) {}
 };
 
 // Force registry class
@@ -20,14 +20,14 @@ private:
 
 public:
 	// Register a force generator for a particle
-	void AddForceGenerator(ForceGenerator* generator, Particle* particle) {
-		registrations.emplace_back(generator, particle);
+	void AddForceGenerator(ForceGenerator* generator, EntityRef entity) {
+		registrations.emplace_back(generator, entity);
 	}
 
 	// Remove a force generator for a particle
-	void RemoveForceGenerator(ForceGenerator* generator, Particle* particle) {
+	void RemoveForceGenerator(ForceGenerator* generator, EntityRef entity) {
 		for (auto it = registrations.begin(); it != registrations.end(); ++it) {
-			if (it->generator == generator && it->particle == particle) {
+			if (it->generator == generator && it->entity.m_entityID == entity.m_entityID) {
 				registrations.erase(it);
 				break;
 			}
@@ -37,11 +37,7 @@ public:
 	// Apply forces to all registered particles
 	void UpdateForces(double dt) {
 		for (auto& registration : registrations) {
-			registration.generator->ApplyForce(registration.particle, dt);
-		}
-		for (int i = 0; i < registrations.size(); i++)
-		{
-			std::cout << registrations[i].particle->radius << std::endl;
+			registration.generator->ApplyForce(registration.entity, dt);
 		}
 	}
 

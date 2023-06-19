@@ -3,8 +3,8 @@
 
 struct ParticleContact
 {
-	Particle* particleA;
-	Particle* particleB;
+	int particleA_id;
+	int particleB_id;
 	FP penetration;
 	//direction of collision towards particle A
 	Vector3 collisionNormal;

@@ -3,7 +3,7 @@
 
 void ContactManager::RegisterContact(ParticleContact& contact)
 {
-	contact.collisionSpeed = (contact.particleB->velocity - contact.particleA->velocity).Dot(contact.collisionNormal);
+	contact.collisionSpeed = (contact.particleB_id->velocity - contact.particleA->velocity).Dot(contact.collisionNormal);
 	particleContacts.push(contact);
 }
 
@@ -25,16 +25,20 @@ void ContactManager::SolveParticleContact(ParticleContact& contact)
 }
 void ContactManager::AdjustPositions(const ParticleContact& contact)
 {
+	auto& entityA = m_scene.entityRegistry->operator[](contact.particleA_id);
+	auto& entityB = m_scene.entityRegistry->operator[](contact.particleB_id);
+	float& inv_mass_A = entityA.GetComponents<Particle_InverseMass>()[0].get().value;
+	float& inv_mass_B = entityB.GetComponents<Particle_InverseMass>()[0].get().value;
 	if (contact.penetration <= 0) return;
-	FP totalInverseMass = contact.particleA->inverse_mass + contact.particleB->inverse_mass;
+	FP totalInverseMass = inv_mass_A + inv_mass_B;
 	// both particles have infinite mass
 	if (totalInverseMass <= 0) return;
 
 	Vector3  depthMass = contact.collisionNormal * (contact.penetration / totalInverseMass);
 
 	//infinite mass is handled automatically here because it will have zero inverso mass
-	contact.particleA->position += depthMass * contact.particleA->inverse_mass;
-	contact.particleB->position -= depthMass * contact.particleB->inverse_mass;
+	entityA.GetComponents<Particle_Position>()[0].get().value += depthMass * inv_mass_A;
+	entityB.GetComponents<Particle_Position>()[0].get().value -= depthMass * inv_mass_B;
 }
 
 

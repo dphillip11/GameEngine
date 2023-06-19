@@ -8,6 +8,7 @@ class EntityRef;
 class EntityRegistry : public hashedVector<Entity> {
 public:
 	EntityRef CreateEntity(ComponentRegistry& componentRegistry);
+	EntityRef GetRef(int entityID);
 };
 
 class Entity {
@@ -137,6 +138,17 @@ public:
 			throw std::runtime_error("Entity is not valid");
 		return m_entity_registry->operator[](m_entityID);
 	}
+
+	template <typename DataType>
+	DataType& get()
+	{
+		auto& entity = get();
+		auto& components = entity.GetComponents<DataType>();
+		if (components.size() < 1)
+			std::runtime_error("EntityRef:: referencing an empty vector");
+		return components[0].get();
+	}
+
 	int m_entityID = -1;
 private:
 	friend class EntityRegistry;
@@ -153,6 +165,14 @@ EntityRef EntityRegistry::CreateEntity(ComponentRegistry& component_registry) {
 
 	EntityRef ref;
 	ref.m_entityID = id;
+	ref.m_entity_registry = this;
+	return ref;
+}
+
+EntityRef EntityRegistry::GetRef(int entityID)
+{
+	EntityRef ref;
+	ref.m_entityID = entityID;
 	ref.m_entity_registry = this;
 	return ref;
 }

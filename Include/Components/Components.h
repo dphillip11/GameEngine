@@ -8,33 +8,41 @@ struct Component
 	bool Active = true;
 };
 
-struct PhysicsMaterial :Component
+struct Particle_Friction
 {
-	FP restitution = 1;
-	FP friction = 0;
+	FP value = 0;
 };
 
-struct Particle_position
+struct Particle_Position
 {
-	Vector3 pos = 0;
+	Vector3 value = 0;
 };
 
-struct Particle_size
+struct Particle_Radius
 {
-	float size = 1;
+	FP value = 1;
 };
 
-
-
-struct Particle :Component
+struct Particle_InverseMass
 {
-	Vector3 position = 0;
-	FP radius = 1;
-	FP inverse_mass = 1;
-	Vector3 velocity = 0;
-	Vector3 acceleration = 0;
-	PhysicsMaterial* material = nullptr;
+	FP value = 1;
 };
+
+struct Particle_Velocity
+{
+	Vector3 value = 0;
+};
+
+struct Particle_Acceleration
+{
+	Vector3 value = 0;
+};
+
+struct Particle_Restitution
+{
+	FP value = 1;
+};
+
 
 
 

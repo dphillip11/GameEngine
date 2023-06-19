@@ -1,10 +1,12 @@
 #pragma once
 #include "Physics/CollisionContacts.h"
 #include <queue>
+#include "Scene/scene.h"
 
 class ContactManager
 {
 public:
+	ContactManager(Scene& scene) : m_scene(scene) {}
 	void RegisterContact(ParticleContact&);
 	void ResolveContacts();
 
@@ -25,5 +27,6 @@ private:
 	friend class CollisionDetection;
 	// Create a priority queue to store ParticleContact objects
 	std::priority_queue<ParticleContact, std::vector<ParticleContact>, CompareParticleContact> particleContacts;
+	Scene& m_scene;
 };
 
