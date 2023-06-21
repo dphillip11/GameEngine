@@ -5,29 +5,32 @@
 class CameraControl
 {
 public:
-	Camera m_camera;
-	float cam_move_speed = 1.0f;
+	Camera& m_camera;
+	float move_speed = 1;
+	float zoom_speed = 100;
+	float rotate_speed = 50;
 
-	void RegisterCallbacks() {
-		Input::RegisterKeyCallback("w", std::bind(&CameraControl::W_Callback, this, std::placeholders::_1, std::placeholders::_2));
-		Input::RegisterKeyCallback("a", std::bind(&CameraControl::A_Callback, this, std::placeholders::_1, std::placeholders::_2));
-		Input::RegisterKeyCallback("s", std::bind(&CameraControl::S_Callback, this, std::placeholders::_1, std::placeholders::_2));
-		Input::RegisterKeyCallback("d", std::bind(&CameraControl::D_Callback, this, std::placeholders::_1, std::placeholders::_2));
+	CameraControl(Camera& camera) : m_camera(camera) {
+
 	}
 
-	void W_Callback(int A, int B) {
-		m_camera.moveForward(cam_move_speed);
+	void ProcessInput(FP_LONG dt)
+	{
+		if (Input::keysDown[GLFW_KEY_UP])
+			m_camera.moveForward(move_speed * dt);
+		if (Input::keysDown[GLFW_KEY_DOWN])
+			m_camera.moveForward(-move_speed * dt);
+		if (Input::keysDown[GLFW_KEY_RIGHT])
+			m_camera.moveRight(move_speed * dt);
+		if (Input::keysDown[GLFW_KEY_LEFT])
+			m_camera.moveRight(-move_speed * dt);
+		if (Input::keysPressed[GLFW_KEY_SPACE])
+		{
+			m_camera.isLockedOn = !m_camera.isLockedOn;
+		}
+		m_camera.rotate(Input::mouseOffset.x * rotate_speed * dt, Input::mouseOffset.y * rotate_speed * dt);
+		m_camera.zoom(Input::mouseScroll * -zoom_speed * dt);
+		Input::Clear();
 	}
-
-	void A_Callback(int A, int B) {
-		m_camera.moveRight(-cam_move_speed);
-	};
-
-	void S_Callback(int A, int B) {
-		m_camera.moveForward(-cam_move_speed);
-	};
-
-	void D_Callback(int A, int B) {
-		m_camera.moveRight(cam_move_speed);
-	};
 };
+

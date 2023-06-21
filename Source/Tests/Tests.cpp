@@ -7,7 +7,7 @@
 #include "Geometry/Vector3.h"
 #include "Managers/ParticleManager.h"
 #include "Physics/ContactManager.h"
-#include "Physics/CollisionDetection.h" 
+//#include "Physics/CollisionDetection.h" 
 
 #define Log(x) {std::cout<<x<<std::endl; return false;}
 namespace TestSuite {

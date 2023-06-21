@@ -28,6 +28,7 @@ Window::Window(const unsigned int width, const unsigned int height, const char* 
 	glfwSetKeyCallback(window, Input::KeyCallback);
 	glfwSetMouseButtonCallback(window, Input::MouseButtonCallback);
 	glfwSetCursorPosCallback(window, Input::CursorPositionCallback);
+	glfwSetScrollCallback(window, Input::ScrollCallback);
 
 	// glad: load all OpenGL function pointers
 	// ---------------------------------------

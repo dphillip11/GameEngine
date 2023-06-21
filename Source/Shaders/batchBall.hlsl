@@ -6,7 +6,7 @@ layout(location = 2) in float ballHalfWidth;
 
 out vec4 colorGS;
 out vec3 worldPos;
-out vec3 normal;
+out vec3 centre;
 
 uniform mat4 VP;
 
@@ -30,10 +30,10 @@ void main()
 	model = scale(model, vec3(ballHalfWidth, ballHalfWidth, ballHalfWidth));
 	mat4 MVP = VP * model;
 	//apply a color
-	colorGS = vec4(30 * gl_InstanceID % 255, (30 * gl_InstanceID + 210) % 255, (30 * gl_InstanceID + 95) % 255, 255)/255.0f;
+	colorGS = vec4(30 * gl_InstanceID % 255, (30 * gl_InstanceID + 210) % 255, (30 * gl_InstanceID + 95) % 255, 255) / 255.0f;
 	//apply a transformation
 	gl_Position = MVP * vec4(aPos, 1.0);
 	worldPos = vec3(model * vec4(aPos, 1));
-	normal = normalize(worldPos - ballPos);
+	centre = ballPos;
 
 }

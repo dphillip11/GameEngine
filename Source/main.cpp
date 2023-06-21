@@ -9,39 +9,25 @@ int main() {
 	Window window(1920, 1080, "window");
 
 	Scene scene;
-	auto g = GravityForce(Vector3(0, -10, 0));
-	auto buoyancy = BuoyantForce(0, 5);
+
 	for (int i = 0; i < 10; i++)
 	{
 		EntityRef particle = scene.particleManager->NewParticle();
-		if (i == 4)
-		{
-			auto drag = DragForce(1, 0.2);
-			scene.forceRegistry->AddForceGenerator(&drag, particle);
-		}
-		particle.getComponent<Particle_Position>().value = Vector3(5 * i - 25, 0, 0);
-		particle.getComponent<Particle_Position>().value = 1 + (i * 0.1f);
-		scene.forceRegistry->AddForceGenerator(&g, particle);
-		scene.forceRegistry->AddForceGenerator(&buoyancy, particle);
+		particle.getComponent<Particle_Position>().value = Vector3(10 * i - 25, 0, 0);
+
 	};
-	EntityRef p1 = scene.particleManager->NewParticle();
-	EntityRef p2 = scene.particleManager->NewParticle();
-	auto spring = SpringForce(p2, 9, 6);
-	p1.getComponent<Particle_Velocity>().value = (0, 0, 1);
-	p1.getComponent<Particle_Position>().value = { 10,0,0 };
-	p2.getComponent<Particle_Velocity>().value = { -10,5,0 };
-	p2.getComponent<Particle_Position>().value = 5;
-	p2.getComponent<Particle_InverseMass>().value = 0.5;
-	scene.forceRegistry->AddForceGenerator(&spring, p1);
-	scene.forceRegistry->AddForceGenerator(&buoyancy, p2);
-	scene.forceRegistry->AddForceGenerator(&g, p2);
-	scene.forceRegistry->AddForceGenerator(&g, p1);
+
 
 	while (!window.closed())
 	{
+		static double previousTime;
+		double currentTime = glfwGetTime();
+		double dt = currentTime - previousTime;
+		previousTime = glfwGetTime();
+
 		scene.particleRenderer->DrawParticles();
 		window.update();
-		scene.Update(0.001);
+		scene.Update(dt);
 	}
 	//TestSuite::RunTests();
 	//testHashedVector();

@@ -8,7 +8,6 @@
 class ParticleRenderer
 {
 private:
-	Camera camera;
 	Mesh& particle_mesh;
 	unsigned int VBO_particle_size;
 	unsigned int VBO_particle_position;
@@ -16,6 +15,7 @@ private:
 	std::unique_ptr<Shader> particleShader;
 
 public:
+	Camera m_camera;
 	ParticleRenderer();
 	void DrawParticles();
 };
