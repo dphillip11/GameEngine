@@ -3,10 +3,16 @@
 #include "Scene/scene.h"
 
 
+
 void CollisionDetection::Update()
 {
 	CheckParticleCollisions();
-	m_contact_manager.ResolveContacts();
+	m_contact_manager->ResolveContacts();
+}
+
+CollisionDetection::CollisionDetection()
+{
+	m_contact_manager = std::make_unique<ContactManager>();
 }
 
 void CollisionDetection::CheckParticleCollisions()
@@ -14,6 +20,7 @@ void CollisionDetection::CheckParticleCollisions()
 	auto& m_scene = *Scene::Get();
 	auto& positions = m_scene.componentRegistry->GetComponentsByType<Particle_Position>();
 	auto& radii = m_scene.componentRegistry->GetComponentsByType<Particle_Radius>();
+	auto& IDs = m_scene.componentRegistry->GetComponentsByType<Particle_ID>();
 
 	auto number = positions.size();
 	if (number != radii.size())
@@ -23,7 +30,7 @@ void CollisionDetection::CheckParticleCollisions()
 		for (size_t j = i + 1; j < number; ++j)
 		{
 
-			CheckParticleCollision(positions[i], positions[j], radii[i], radii[j], i, j);
+			CheckParticleCollision(positions[i], positions[j], radii[i], radii[j], IDs[i].value, IDs[j].value);
 		}
 	}
 }
@@ -37,8 +44,8 @@ void CollisionDetection::CheckParticleCollision(Particle_Position& A_pos, Partic
 		return;
 	ParticleContact contact;
 	contact.collisionNormal = CollisionVector.Normalise();
-	contact.particleA_id = ID_A;
-	contact.particleB_id = ID_B;
+	contact.particleA = Scene::Get()->entityRegistry->GetRef(ID_A);
+	contact.particleB = Scene::Get()->entityRegistry->GetRef(ID_B);
 	contact.penetration = distance - sumOfRadii;
-	m_contact_manager.RegisterContact(contact);
+	m_contact_manager->RegisterContact(contact);
 }

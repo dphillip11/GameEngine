@@ -1,5 +1,6 @@
 #include "PCH/pch.h"
 #include "Rendering/Window.h"
+#include "Input/input.h"
 
 Window::Window(const unsigned int width, const unsigned int height, const char* name)
 {
@@ -23,10 +24,10 @@ Window::Window(const unsigned int width, const unsigned int height, const char* 
 		glfwTerminate();
 	}
 	glfwMakeContextCurrent(window);
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	glfwSetCursorPosCallback(window, mouse_callback);
-	glfwSetScrollCallback(window, scroll_callback);
+	glfwSetKeyCallback(window, Input::KeyCallback);
+	glfwSetMouseButtonCallback(window, Input::MouseButtonCallback);
+	glfwSetCursorPosCallback(window, Input::CursorPositionCallback);
 
 	// glad: load all OpenGL function pointers
 	// ---------------------------------------
@@ -43,65 +44,6 @@ Window::Window(const unsigned int width, const unsigned int height, const char* 
 	glLoadIdentity();
 }
 
-void Window::framebuffer_size_callback(GLFWwindow* window, int WIDTH, int HEIGHT)
-{
-	glViewport(0, 0, WIDTH, HEIGHT);
-}
-
-void Window::mouse_callback(GLFWwindow* window, double xpos, double ypos)
-{
-	/*input->mouseX = (float)xpos;
-	input->mouseY = (float)ypos;*/
-}
-
-void Window::scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
-{
-	//input->scrollOffset -= (float)yoffset;
-}
-
-
-void Window::captureInput()
-{
-	/*if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, true);
-	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-	{
-		input->LogKey(KEYS::UP);
-	}
-	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-	{
-		input->LogKey(KEYS::DOWN);
-	}
-	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-	{
-		input->LogKey(KEYS::LEFT);
-	}
-	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-	{
-		input->LogKey(KEYS::RIGHT);
-	}
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-	{
-		input->LogKey(KEYS::W);
-	}
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-	{
-		input->LogKey(KEYS::A);
-	}
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-	{
-		input->LogKey(KEYS::S);
-	}
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-	{
-		input->LogKey(KEYS::D);
-	}
-	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-	{
-		input->LogKey(KEYS::SPACE);
-	}*/
-
-}
 
 bool Window::closed() {
 	return glfwWindowShouldClose(window);
@@ -113,7 +55,6 @@ void Window::update()
 	glClearColor(clearColor.x, clearColor.y, clearColor.z, 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glfwPollEvents();
-	captureInput();
 }
 
 void Window::terminate()

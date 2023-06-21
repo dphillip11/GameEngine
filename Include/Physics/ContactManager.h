@@ -18,13 +18,14 @@ class ContactManager
 private:
 	//particle contact functions
 	void SolveParticleContact(ParticleContact& contact);
-	void AdjustPositions(const ParticleContact& contact);
-	void AdjustVelocities(const ParticleContact& contact);
+	void AdjustPositions(ParticleContact& contact);
+	void AdjustVelocities(ParticleContact& contact);
 
-	// Create a priority queue to store ParticleContact objects
-	ParticleContactQueue particleContacts;
+
 
 public:
+	// Create a priority queue to store ParticleContact objects
+	ParticleContactQueue particleContacts;
 	void RegisterContact(ParticleContact&);
 	void ResolveContacts();
 	ParticleContactQueue& GetParticleContacts() { return particleContacts; }

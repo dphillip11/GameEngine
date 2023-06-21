@@ -145,7 +145,7 @@ public:
 		auto& entity = getEntity();
 		auto components = entity.GetComponents<DataType>();
 		if (components.size() < 1)
-			std::runtime_error("EntityRef:: referencing an empty vector");
+			throw std::runtime_error("EntityRef:: referencing an empty vector");
 		return components[0].get();
 	}
 

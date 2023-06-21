@@ -43,6 +43,11 @@ struct Particle_Restitution
 	FP value = 1;
 };
 
+struct Particle_ID
+{
+	unsigned int value = -1;
+};
+
 
 
 

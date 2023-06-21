@@ -16,6 +16,7 @@ EntityRef ParticleManager::NewParticle()
 	entity.EmplaceComponent<Particle_Acceleration>();
 	entity.EmplaceComponent<Particle_Restitution>();
 	entity.EmplaceComponent<Particle_Friction>();
+	entity.EmplaceComponent<Particle_ID>(entity_ref.m_entityID);
 	return entity_ref;
 }
 
