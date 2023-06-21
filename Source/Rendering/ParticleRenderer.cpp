@@ -2,6 +2,7 @@
 #include "Rendering/ParticleRenderer.h"
 #include "Managers/BufferManager.h"
 #include "Rendering/MeshGenerator.h"
+#include "Scene/scene.h"
 
 #define NUM_SEGMENTS  40
 
@@ -27,8 +28,8 @@ std::vector<glm::vec3> convertFloatVecToVec3(std::vector<float>& input)
 	return output;
 }
 
-ParticleRenderer::ParticleRenderer(Scene& scene)
-	:particle_mesh(MeshRegistry::GetInstance().GetMesh("Particle")), camera(Camera(glm::vec3(0, 0, -50), glm::vec3(0, 0, 0))), m_scene(scene)
+ParticleRenderer::ParticleRenderer()
+	:particle_mesh(MeshRegistry::GetInstance().GetMesh("Particle")), camera(Camera(glm::vec3(0, 0, -50), glm::vec3(0, 0, 0)))
 {
 	particleShader = std::make_unique<Shader>("Source/Shaders/batchBall.hlsl", "Source/Shaders/ball.hlsl");
 
@@ -37,31 +38,39 @@ ParticleRenderer::ParticleRenderer(Scene& scene)
 	std::vector<int> indices;
 	MeshGenerator::GenerateBallVertices(indices, vertices, NUM_SEGMENTS);
 	std::vector<glm::vec3> vec3_vertices = convertFloatVecToVec3(vertices);
+	particle_mesh.indexCount = indices.size();
+	particle_mesh.vertexCount = vertices.size() / 3;
+
 	glGenVertexArrays(1, &VAO_particles);
 	glGenBuffers(1, &particle_mesh.VBO);
 	glGenBuffers(1, &particle_mesh.EBO);
-	BufferManager::setVertices(&vertices[0], vertices.size(), VAO_particles, particle_mesh.VBO);
-	BufferManager::setIndices(&indices[0], indices.size(), particle_mesh.EBO);
-	particle_mesh.setEBO = true;
-	BufferManager::setAttributes(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(0));
-	//set up position and size buffers
-	auto& particle_positions = m_scene.componentRegistry->GetComponentsByType<Particle_position>();
 	glGenBuffers(1, &VBO_particle_position);
 	glGenBuffers(1, &VBO_particle_size);
-	BufferManager::setVertices(&particle_positions[0], particle_positions.size(), VAO_particles, VBO_particle_position);
+
+	BufferManager::setVertices(&vertices[0], vertices.size(), VAO_particles, particle_mesh.VBO);
+	BufferManager::setIndices(&indices[0], indices.size(), particle_mesh.EBO);
+	BufferManager::setAttributes(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(0));
+	particle_mesh.setEBO = true;
+
+	//set up position and size buffers
+	auto& m_scene = *Scene::Get();
+	auto& particle_positions = m_scene.componentRegistry->GetComponentsByType<Particle_Position>();
+	auto& particle_sizes = m_scene.componentRegistry->GetComponentsByType<Particle_Radius>();
+
+	BufferManager::setVertices(particle_positions.data(), particle_positions.size(), VAO_particles, VBO_particle_position);
 	BufferManager::setAttributes(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(0));
 	glVertexAttribDivisor(1, 1);
-	auto& particle_sizes = m_scene.componentRegistry->GetComponentsByType<Particle_size>();
-	glGenBuffers(1, &VBO_particle_size);
-	BufferManager::setVertices(&particle_sizes[0], particle_sizes.size(), VAO_particles, VBO_particle_size);
+
+	BufferManager::setVertices(particle_sizes.data(), particle_sizes.size(), VAO_particles, VBO_particle_size);
 	BufferManager::setAttributes(2, 1, GL_FLOAT, GL_FALSE, sizeof(float), (void*)(0));
 	glVertexAttribDivisor(2, 1);
 }
 
 void ParticleRenderer::DrawParticles()
 {
-	auto& particle_positions = m_scene.componentRegistry->GetComponentsByType<Particle_position>();
-	auto& particle_sizes = m_scene.componentRegistry->GetComponentsByType<Particle_size>();
+	auto& m_scene = *Scene::Get();
+	auto& particle_positions = m_scene.componentRegistry->GetComponentsByType<Particle_Position>();
+	auto& particle_sizes = m_scene.componentRegistry->GetComponentsByType<Particle_Radius>();
 	if (particle_positions.size() == 0)
 		return;
 	particleShader->Use();
@@ -72,10 +81,8 @@ void ParticleRenderer::DrawParticles()
 
 	// Bind the particle mesh and set up its attributes
 	BufferManager::Bind(VAO_particles, particle_mesh.VBO, particle_mesh.EBO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO_particle_position);
-	glBufferData(GL_ARRAY_BUFFER, particle_positions.size() * sizeof(Vector3), &particle_positions[0], GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO_particle_size);
-	glBufferData(GL_ARRAY_BUFFER, particle_sizes.size() * sizeof(float), &particle_sizes[0], GL_STATIC_DRAW);
+	BufferManager::setVertices(particle_positions.data(), particle_positions.size(), VAO_particles, VBO_particle_position);
+	BufferManager::setVertices(particle_sizes.data(), particle_sizes.size(), VAO_particles, VBO_particle_size);
 	// Draw the particles using instanced rendering
 	glDrawElementsInstanced(GL_TRIANGLES, particle_mesh.indexCount, GL_UNSIGNED_INT, 0, static_cast<GLsizei>(particle_positions.size()));
 

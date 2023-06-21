@@ -1,21 +1,23 @@
 #pragma once
+
+#ifndef COLLISIONDETECTION_H
+#define COLLISIONDETECTION_H
 #include "Components/Components.h"
 #include "Physics/ContactManager.h"
-#include "Scene/scene.h"
 
 class CollisionDetection
 {
 private:
-	Scene& m_scene;
 	ContactManager m_contact_manager;
 public:
-	const auto& GetContacts()
+	CollisionDetection() = default;
+	ParticleContactQueue& GetContacts()
 	{
-		return m_contact_manager.particleContacts;
+		return m_contact_manager.GetParticleContacts();
 	}
-	CollisionDetection(Scene& scene) :m_scene(scene), m_contact_manager(ContactManager(m_scene)) {}
 	void CheckParticleCollisions();
 	void CheckParticleCollision(Particle_Position& A_pos, Particle_Position& B_pos, Particle_Radius& A_radius, Particle_Radius& B_radius, int ID_A, int ID_B);
 	void Update();
 };
+#endif //COLLISIONDETECTION_H
 

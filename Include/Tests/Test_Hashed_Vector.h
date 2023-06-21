@@ -3,7 +3,7 @@
 #include <cassert>
 #include <stdexcept>
 #include <vector>
-#include "Tools/HashedVector.h"
+#include "Tools/HashedVector.hpp"
 
 // Test function to check if the given condition is true
 void test(bool condition, int testNumber)

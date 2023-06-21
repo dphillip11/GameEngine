@@ -1,11 +1,14 @@
 #include "PCH/pch.h"
 #include "Managers/ParticleManager.h"
 #include "Registries/ComponentRegistry.h"
+#include "Entity/entity.h"
+#include "Scene/scene.h"
 
 EntityRef ParticleManager::NewParticle()
 {
+	auto& m_scene = *Scene::Get();
 	EntityRef entity_ref = m_scene.entityRegistry->CreateEntity(*m_scene.componentRegistry);
-	auto& entity = entity_ref.get();
+	auto& entity = entity_ref.getEntity();
 	entity.EmplaceComponent<Particle_Position>();
 	entity.EmplaceComponent<Particle_Radius>();
 	entity.EmplaceComponent<Particle_InverseMass>();
@@ -31,6 +34,7 @@ void ParticleManager::IntegrateVelocity(FP_LONG dt, Particle_Position& position,
 // updates particle positions based on position, velocityand acceleration
 void ParticleManager::UpdateAllParticles(FP_LONG dt)
 {
+	auto& m_scene = *Scene::Get();
 	auto& velocities = m_scene.componentRegistry->GetComponentsByType<Particle_Velocity>();
 	auto& accelerations = m_scene.componentRegistry->GetComponentsByType<Particle_Acceleration>();
 	auto& positions = m_scene.componentRegistry->GetComponentsByType<Particle_Position>();

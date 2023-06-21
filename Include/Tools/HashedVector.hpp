@@ -6,7 +6,7 @@
 #include <algorithm>
 
 template <typename dataType>
-class hashedVector{
+class HashedVector {
 private:
 	// this is where user data is stored
 	std::vector<dataType> wrapped_vector;
@@ -18,7 +18,7 @@ private:
 	void offsetAllValuesAfterKey(int key)
 	{
 		//offset all values after key
-		for (auto &pair : hash_map)
+		for (auto& pair : hash_map)
 		{
 			if (pair.first > key)
 			{
@@ -41,7 +41,7 @@ public:
 		wrapped_vector.push_back(new_data);
 		//add node to hash map
 		addPair();
-		return next_key-1;
+		return next_key - 1;
 	}
 
 	//pass constructor arguments

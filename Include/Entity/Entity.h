@@ -5,7 +5,7 @@
 class Entity;
 class EntityRef;
 
-class EntityRegistry : public hashedVector<Entity> {
+class EntityRegistry : public HashedVector<Entity> {
 public:
 	EntityRef CreateEntity(ComponentRegistry& componentRegistry);
 	EntityRef GetRef(int entityID);
@@ -129,7 +129,7 @@ private:
 
 class EntityRef {
 public:
-	Entity& get() {
+	Entity& getEntity() {
 		if (m_entityID == -1)
 			throw std::runtime_error("Entity ID is -1");
 		if (m_entity_registry == nullptr)
@@ -140,10 +140,10 @@ public:
 	}
 
 	template <typename DataType>
-	DataType& get()
+	DataType& getComponent()
 	{
-		auto& entity = get();
-		auto& components = entity.GetComponents<DataType>();
+		auto& entity = getEntity();
+		auto components = entity.GetComponents<DataType>();
 		if (components.size() < 1)
 			std::runtime_error("EntityRef:: referencing an empty vector");
 		return components[0].get();
@@ -155,27 +155,7 @@ private:
 	EntityRegistry* m_entity_registry = nullptr;
 };
 
-EntityRef EntityRegistry::CreateEntity(ComponentRegistry& component_registry) {
-	Entity tempEntity;
-	tempEntity.m_entity_registry = this;
-	tempEntity.m_component_registry = &component_registry;
-	int id = hashedVector<Entity>::push_back(tempEntity);
-	Entity& entity = hashedVector<Entity>::operator[](id);
-	entity.m_id = id;
 
-	EntityRef ref;
-	ref.m_entityID = id;
-	ref.m_entity_registry = this;
-	return ref;
-}
-
-EntityRef EntityRegistry::GetRef(int entityID)
-{
-	EntityRef ref;
-	ref.m_entityID = entityID;
-	ref.m_entity_registry = this;
-	return ref;
-}
 
 #endif // ENTITY_H
 

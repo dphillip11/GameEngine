@@ -35,7 +35,7 @@ public:
 	}
 
 	// Apply forces to all registered particles
-	void UpdateForces(double dt) {
+	void UpdateForces(FP_LONG dt) {
 		for (auto& registration : registrations) {
 			registration.generator->ApplyForce(registration.entity, dt);
 		}

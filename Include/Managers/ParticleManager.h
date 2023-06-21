@@ -1,15 +1,13 @@
 #pragma once
 #include "Geometry/Precision.h"
 #include "Components/Components.h"
-#include "Scene/scene.h"
+
+class EntityRef;
 
 class ParticleManager
 {
-private:
-	Scene& m_scene;
 public:
 	EntityRef NewParticle();
-	ParticleManager(Scene& scene) :m_scene(scene) {}
 	// updates velocity based on acceleration and time
 	void IntegrateAcceleration(FP_LONG dt, Particle_Velocity& velocity, Particle_Acceleration& acceleration);
 	// update position based on velocity and time

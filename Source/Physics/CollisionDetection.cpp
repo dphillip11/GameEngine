@@ -1,5 +1,7 @@
 #include "PCH/pch.h"
 #include "Physics/CollisionDetection.h"
+#include "Scene/scene.h"
+
 
 void CollisionDetection::Update()
 {
@@ -9,6 +11,7 @@ void CollisionDetection::Update()
 
 void CollisionDetection::CheckParticleCollisions()
 {
+	auto& m_scene = *Scene::Get();
 	auto& positions = m_scene.componentRegistry->GetComponentsByType<Particle_Position>();
 	auto& radii = m_scene.componentRegistry->GetComponentsByType<Particle_Radius>();
 

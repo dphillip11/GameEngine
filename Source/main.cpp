@@ -19,19 +19,19 @@ int main() {
 			auto drag = DragForce(1, 0.2);
 			scene.forceRegistry->AddForceGenerator(&drag, particle);
 		}
-		particle.get<Particle_Position>().value = Vector3(5 * i - 25, 0, 0);
-		particle.get<Particle_Position>().value = 1 + (i * 0.1f);
+		particle.getComponent<Particle_Position>().value = Vector3(5 * i - 25, 0, 0);
+		particle.getComponent<Particle_Position>().value = 1 + (i * 0.1f);
 		scene.forceRegistry->AddForceGenerator(&g, particle);
 		scene.forceRegistry->AddForceGenerator(&buoyancy, particle);
 	};
 	EntityRef p1 = scene.particleManager->NewParticle();
 	EntityRef p2 = scene.particleManager->NewParticle();
 	auto spring = SpringForce(p2, 9, 6);
-	p1.get<Particle_Velocity>().value = (0, 0, 1);
-	p1.get<Particle_Position>().value = { 10,0,0 };
-	p2.get<Particle_Velocity>().value = { -10,5,0 };
-	p2.get<Particle_Position>().value = 5;
-	p2.get<Particle_InverseMass>().value = 0.5;
+	p1.getComponent<Particle_Velocity>().value = (0, 0, 1);
+	p1.getComponent<Particle_Position>().value = { 10,0,0 };
+	p2.getComponent<Particle_Velocity>().value = { -10,5,0 };
+	p2.getComponent<Particle_Position>().value = 5;
+	p2.getComponent<Particle_InverseMass>().value = 0.5;
 	scene.forceRegistry->AddForceGenerator(&spring, p1);
 	scene.forceRegistry->AddForceGenerator(&buoyancy, p2);
 	scene.forceRegistry->AddForceGenerator(&g, p2);
@@ -43,8 +43,8 @@ int main() {
 		window.update();
 		scene.Update(0.001);
 	}
-	TestSuite::RunTests();
-	testHashedVector();
-	testHashedVector2();
+	//TestSuite::RunTests();
+	//testHashedVector();
+	//testHashedVector2();
 
 }

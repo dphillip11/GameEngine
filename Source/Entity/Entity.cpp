@@ -1,36 +1,23 @@
 #include "Entity/Entity.h"
 
+EntityRef EntityRegistry::CreateEntity(ComponentRegistry& component_registry) {
+	Entity tempEntity;
+	tempEntity.m_entity_registry = this;
+	tempEntity.m_component_registry = &component_registry;
+	int id = HashedVector<Entity>::push_back(tempEntity);
+	Entity& entity = HashedVector<Entity>::operator[](id);
+	entity.m_id = id;
 
-int Entity::m_nextID = 0;
-std::unordered_map<int, Entity*> Entity::m_entities;
-
-
-
-Entity::~Entity() {
-	// deactivate components
-	for (auto componentVector : m_components)
-	{
-		for (auto component : componentVector.second)
-		{
-			component->Active = false;
-		}
-	}
-	// remove ID from entities
-	auto iter = m_entities.find(m_ID);
-
-	if (iter != m_entities.end()) {
-		// Key exists, erase the vector associated with it
-		m_entities.erase(iter);
-	}
+	EntityRef ref;
+	ref.m_entityID = id;
+	ref.m_entity_registry = this;
+	return ref;
 }
 
-Entity* Entity::GetEntity(int ID)
+EntityRef EntityRegistry::GetRef(int entityID)
 {
-	auto iter = m_entities.find(ID);
-	if (iter != m_entities.end()) {
-		return m_entities[ID];
-	}
-	else
-		return nullptr;
-
+	EntityRef ref;
+	ref.m_entityID = entityID;
+	ref.m_entity_registry = this;
+	return ref;
 }
