@@ -5,7 +5,7 @@
 #include "Entity/Entity.h"
 #include "Registries/ForceRegistry.h"
 #include "Managers/ParticleManager.h"
-//#include "Physics/CollisionDetection.h"
+#include "Physics/CollisionDetection.h"
 #include "Rendering/ParticleRenderer.h"
 #include "Scene/CameraControl.h"
 #include <memory>
@@ -36,7 +36,7 @@ public:
 	std::unique_ptr<EntityRegistry> entityRegistry = nullptr;
 	std::unique_ptr<ParticleManager> particleManager = nullptr;
 	std::unique_ptr<ForceRegistry> forceRegistry = nullptr;
-	//std::unique_ptr<CollisionDetection> collisionDetection = nullptr;
+	std::unique_ptr<CollisionDetection> collisionDetection = nullptr;
 	std::unique_ptr<ParticleRenderer> particleRenderer = nullptr;
 
 	Scene()
@@ -46,7 +46,7 @@ public:
 		entityRegistry = std::make_unique<EntityRegistry>();
 		forceRegistry = std::make_unique<ForceRegistry>();
 		particleManager = std::make_unique<ParticleManager>();
-		//collisionDetection = std::make_unique<CollisionDetection>();
+		collisionDetection = std::make_unique<CollisionDetection>();
 		particleRenderer = std::make_unique<ParticleRenderer>();
 		cameraControl = std::make_unique<CameraControl>(particleRenderer->m_camera);
 	}
@@ -54,10 +54,10 @@ public:
 	void Update(FP_LONG dt)
 	{
 
-		//if (collisionDetection)
-		/*{
+		if (collisionDetection)
+		{
 			collisionDetection->Update();
-		}*/
+		}
 		if (cameraControl)
 			cameraControl->ProcessInput(dt);
 		if (forceRegistry)

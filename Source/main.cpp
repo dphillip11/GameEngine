@@ -16,6 +16,7 @@ int main() {
 		particle.getComponent<Particle_Position>().value = Vector3(10 * i - 25, 0, 0);
 
 	};
+	scene.componentRegistry->GetComponentByComponentID<Particle_Velocity>(3).value = Vector3(-1, 0, 0);
 
 
 	while (!window.closed())
