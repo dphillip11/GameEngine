@@ -3,7 +3,6 @@
 #include <vector>
 #include "Registries/MeshRegistry.h"
 #include "Rendering/Shader.h"
-#include "Camera.h"
 
 class ParticleRenderer
 {
@@ -15,7 +14,6 @@ private:
 	std::unique_ptr<Shader> particleShader;
 
 public:
-	Camera m_camera;
 	ParticleRenderer();
 	void DrawParticles();
 };

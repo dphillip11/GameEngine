@@ -2,11 +2,6 @@
 #include "Geometry/Precision.h"
 #include "Geometry/Vector3.h"
 
-struct Component
-{
-	int GameObjectID = -1;
-	bool Active = true;
-};
 
 struct Particle_Friction
 {
@@ -46,6 +41,19 @@ struct Particle_Restitution
 struct Particle_ID
 {
 	unsigned int value = -1;
+};
+
+struct Line_Coordinates
+{
+	Vector3 A;
+	Vector3 B;
+};
+
+struct Line_Color
+{
+	//color for each vertex
+	Vector3 A;
+	Vector3 B;
 };
 
 

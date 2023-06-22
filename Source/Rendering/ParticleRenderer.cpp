@@ -29,7 +29,7 @@ std::vector<glm::vec3> convertFloatVecToVec3(std::vector<float>& input)
 }
 
 ParticleRenderer::ParticleRenderer()
-	:particle_mesh(MeshRegistry::GetInstance().GetMesh("Particle")), m_camera(Camera(glm::vec3(0, 0, -50), glm::vec3(0, 0, 0)))
+	:particle_mesh(MeshRegistry::GetInstance().GetMesh("Particle"))
 {
 	particleShader = std::make_unique<Shader>("Source/Shaders/batchBall.hlsl", "Source/Shaders/ball.hlsl");
 
@@ -68,9 +68,11 @@ ParticleRenderer::ParticleRenderer()
 	glVertexAttribDivisor(2, 1);
 }
 
+
 void ParticleRenderer::DrawParticles()
 {
 	auto& m_scene = *Scene::Get();
+	auto& m_camera = m_scene.camera;
 	auto& particle_positions = m_scene.componentRegistry->GetComponentsByType<Particle_Position>();
 	auto& particle_sizes = m_scene.componentRegistry->GetComponentsByType<Particle_Radius>();
 	if (particle_positions.size() == 0)

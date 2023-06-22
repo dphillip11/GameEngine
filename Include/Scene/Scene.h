@@ -7,7 +7,9 @@
 #include "Managers/ParticleManager.h"
 #include "Physics/CollisionDetection.h"
 #include "Rendering/ParticleRenderer.h"
+#include "Rendering/LineRenderer.h"
 #include "Scene/CameraControl.h"
+#include "Rendering/Camera.h"
 #include <memory>
 
 
@@ -38,6 +40,8 @@ public:
 	std::unique_ptr<ForceRegistry> forceRegistry = nullptr;
 	std::unique_ptr<CollisionDetection> collisionDetection = nullptr;
 	std::unique_ptr<ParticleRenderer> particleRenderer = nullptr;
+	std::unique_ptr<LineRenderer> lineRenderer = nullptr;
+	Camera camera{ glm::vec3(0),glm::vec3(0,0,-15) };
 
 	Scene()
 	{
@@ -48,7 +52,8 @@ public:
 		particleManager = std::make_unique<ParticleManager>();
 		collisionDetection = std::make_unique<CollisionDetection>();
 		particleRenderer = std::make_unique<ParticleRenderer>();
-		cameraControl = std::make_unique<CameraControl>(particleRenderer->m_camera);
+		lineRenderer = std::make_unique<LineRenderer>();
+		cameraControl = std::make_unique<CameraControl>(camera);
 	}
 
 	void Update(FP_LONG dt)
@@ -68,6 +73,12 @@ public:
 		{
 			particleManager->UpdateAllParticles(dt);
 		}
+	}
+
+	void Render()
+	{
+		particleRenderer->DrawParticles();
+		lineRenderer->DrawLines();
 	}
 
 };
