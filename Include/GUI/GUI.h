@@ -1,5 +1,5 @@
 #include "GLFW3.h"
-
+#include "Entity/entity.h"
 
 #pragma once
 class GUI {
@@ -22,7 +22,11 @@ private:
 
 	void DisplayInspectorWindow();
 
-	void DisplayGameObject(int id);
+	void DisplayEntities();
+
+	void DisplayParticle(EntityRef entity);
+
+	void DisplayForces(EntityRef entityRef);
 
 	void DisplayTransform(int id);
 

@@ -111,4 +111,19 @@ void test_registry()
 	auto& stored_entity = entitiesVector.back();
 	test(entitiesVector.back().GetComponents<char>()[0] == 'f');    // test21
 	test(stored_entity.GetComponents<float>()[0] == 57.0f); //test22
+
+	//test if inherited classed are distinguished from bases
+	struct A {
+		int value;
+	};
+
+	struct B :A {
+	};
+
+	A a{ 1 };
+	B b{ 2 };
+	components.RegisterComponent(a);
+	components.RegisterComponent(b);
+	test(components.GetComponentsByType<A>().size() == 1 && components.GetComponentsByType<A>()[0].value == 1);
+	test(components.GetComponentsByType<B>().size() == 1 && components.GetComponentsByType<B>()[0].value == 2);
 }

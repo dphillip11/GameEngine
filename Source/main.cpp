@@ -18,15 +18,21 @@ int main() {
 	anchor.getComponent<Particle_InverseMass>().value = 0;
 	anchor.getComponent<Particle_Radius>().value = 5;
 	EntityRef previous = anchor;
-	GravityForce gravity(Vector3(0, -10, 0));
+	GravityForce g;
+	g.m_gravity = { 0, -10, 0 };
 	for (int i = 0; i < 10; i++)
 	{
 		EntityRef particle = scene.particleManager->NewParticle();
 		particle.getComponent<Particle_Position>().value = Vector3(10 * i - 25, 0, 0);
-		auto spring = SpringForce(previous, 10, 1);
-		scene.forceRegistry->AddForceGenerator(spring, particle);
+		g.entity = particle;
+		particle.getEntity().AddComponent(g);
+		SpringForce spring;
+		spring.entity = particle;
+		spring.m_other = previous;
+		spring.m_restLength = 2;
+		spring.m_springConstant = 5;
+		particle.getEntity().AddComponent(spring);
 		previous.m_entityID = particle.m_entityID;
-		scene.forceRegistry->AddForceGenerator(gravity, particle);
 		if (i == 9)
 		{
 			particle.getComponent<Particle_InverseMass>().value = 0;
@@ -48,6 +54,6 @@ int main() {
 	//TestSuite::RunTests();
 	//testHashedVector();
 	//testHashedVector2();
-	//test_registry();
+	test_registry();
 
 }

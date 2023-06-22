@@ -1,6 +1,7 @@
 #include "PCH/pch.h"
 #include "GUI/GUI.h"
 #include "Scene/scene.h"
+std::unique_ptr<int> uniquePtr = std::make_unique<int>();
 
 void GUI::Init(GLFWwindow* window)
 {
@@ -40,11 +41,39 @@ void GUI::DisplayHierarchy() {
 	ImGui::Begin("Hierarchy", &hierarchy_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
 	ImGui::SetWindowFontScale(1.5f);
 	DisplaySpawnButton();
+	DisplayEntities();
 	ImGui::End();
 }
 
-void GUI::DisplayGameObject(int id)
+void GUI::DisplayEntities()
 {
+	auto& entities = Scene::Get()->entityRegistry->getHashMap();
+	for (auto& entity : entities)
+	{
+		ImGui::Text(("Entity " + std::to_string(entity.first)).c_str());
+		ImGui::PushID(entity.first);
+		if (ImGui::Button("Inspect"))
+		{
+			std::cout << entity.first << std::endl;
+			inspectorID = entity.first;
+			inspector_window = true;
+		}
+		ImGui::PopID();
+	}
+}
+
+void GUI::DisplayParticle(EntityRef entityRef)
+{
+	auto& entity = entityRef.getEntity();
+	auto particle_positions = entity.GetComponents<Particle_Position>();
+	auto particle_radii = entity.GetComponents<Particle_Radius>();
+	auto particle_iMass = entity.GetComponents<Particle_InverseMass>();
+	for (int i = 0; i < particle_positions.size(); i++)
+	{
+		ImGui::DragFloat3("Position", &particle_positions[i].get().value.x);
+		ImGui::DragFloat("Radius", &particle_radii[i].get().value);
+		ImGui::DragFloat("Inverse Mass", &particle_iMass[i].get().value);
+	}
 
 }
 
@@ -65,6 +94,10 @@ void GUI::DisplaySystemWindow()
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
 	ImGui::Begin("System Window", &system_window);
 	ImGui::SetWindowFontScale(1.5f);
+	if (ImGui::Button("Pause"))
+	{
+		Scene::Get()->isPaused = !Scene::Get()->isPaused;
+	}
 	ImGui::DragFloat3("Camera Position", reinterpret_cast<float*>(&Scene::Get()->camera._position));
 	ImGui::Text(" %.3f ms/frame (%.1f FPS)", 1000.0f / io->Framerate, io->Framerate);
 	ImGui::End();
@@ -72,7 +105,41 @@ void GUI::DisplaySystemWindow()
 
 void GUI::DisplayInspectorWindow()
 {
+	ImGui::Begin("Inspector Window", &inspector_window);
+	if (Scene::Get()->entityRegistry->is_valid_key(inspectorID))
+	{
+		auto entity = Scene::Get()->entityRegistry->GetRef(inspectorID);
+		if (entity.getEntity().hasComponent<Particle_Position>())
+			DisplayParticle(entity);
+		if (entity.getEntity().hasComponent<SpringForce>() || entity.getEntity().hasComponent<GravityForce>())
+			DisplayForces(entity);
+	}
+	ImGui::End();
+}
 
+void GUI::DisplayForces(EntityRef entityRef)
+{
+	auto& entity = entityRef.getEntity();
+	auto spring_forces = entity.GetComponents<SpringForce>();
+	auto gravity_forces = entity.GetComponents<GravityForce>();
+	int index = 0;
+	for (auto& spring_force : spring_forces)
+	{
+		ImGui::PushID(index);
+		ImGui::DragFloat("Spring constant", &spring_force.get().m_springConstant);
+		ImGui::DragFloat("rest length", &spring_force.get().m_restLength);
+		ImGui::DragInt("other particle", &spring_force.get().m_other.m_entityID);
+		ImGui::PopID();
+		index++;
+	}
+
+	if (ImGui::Selectable("Add SpringForce"))
+	{
+		SpringForce s;
+		s.m_other = Scene::Get()->entityRegistry->GetRef(2);
+		s.entity = entityRef;
+		entity.AddComponent(s);
+	}
 }
 
 void GUI::DisplayTransformInfo()
