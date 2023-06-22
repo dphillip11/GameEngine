@@ -66,3 +66,4 @@ void LineRenderer::DeleteLines()
 	registry->DestroyComponents<Line_Color>();
 }
 
+

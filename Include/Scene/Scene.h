@@ -41,7 +41,7 @@ public:
 	std::unique_ptr<CollisionDetection> collisionDetection = nullptr;
 	std::unique_ptr<ParticleRenderer> particleRenderer = nullptr;
 	std::unique_ptr<LineRenderer> lineRenderer = nullptr;
-	Camera camera{ glm::vec3(0),glm::vec3(0,0,-15) };
+	Camera camera{ glm::vec3(0,0,-100), glm::vec3(0,0,0) };
 
 	Scene()
 	{
@@ -79,6 +79,7 @@ public:
 	{
 		particleRenderer->DrawParticles();
 		lineRenderer->DrawLines();
+		lineRenderer->DeleteLines();
 	}
 
 };

@@ -1,5 +1,11 @@
 #include "PCH/pch.h"
+#include "Macros/macros.h"
 #include "Physics/ForceGenerator.h"
+
+#if (DRAW_SPRINGS)
+#include "Scene/scene.h"
+#endif
+
 
 void GravityForce::ApplyForce(EntityRef entity, FP_LONG dt) {
 	// Check object doesn't have infinite mass.
@@ -38,7 +44,10 @@ void SpringForce::ApplyForce(EntityRef entity, FP_LONG dt) {
 	if (entity.getComponent<Particle_InverseMass>().value != 0)
 		entity.getComponent<Particle_Acceleration>().value += (force * -entity.getComponent<Particle_InverseMass>().value);
 	if (m_other.getComponent<Particle_InverseMass>().value != 0)
-		m_other.getComponent<Particle_Acceleration>().value += (force * entity.getComponent<Particle_InverseMass>().value);
+		m_other.getComponent<Particle_Acceleration>().value += (force * m_other.getComponent<Particle_InverseMass>().value);
+#if DRAW_SPRINGS
+	Scene::Get()->lineRenderer->DrawLine(entity.getComponent<Particle_Position>().value, m_other.getComponent<Particle_Position>().value);
+#endif
 }
 
 
