@@ -5,11 +5,13 @@
 #include "Scene/Scene.h"
 #include "Tests/Test_Hashed_Vector.h"
 #include "Tests/Testregistry.h"
+#include "GUI/GUI.h"
 
 int main() {
 
 	Window window(1920, 1080, "window");
-
+	GUI gui;
+	gui.Init(window.window);
 	Scene scene;
 	EntityRef anchor = scene.particleManager->NewParticle();
 	anchor.getComponent<Particle_Position>().value = Vector3(-35, 0, 0);
@@ -41,6 +43,7 @@ int main() {
 		window.update();
 		scene.Update(dt);
 		scene.Render();
+		gui.Render();
 	}
 	//TestSuite::RunTests();
 	//testHashedVector();
