@@ -3,9 +3,10 @@
 #include "Scene/scene.h"
 #include "Managers/BufferManager.h"
 
+
 LineRenderer::LineRenderer() {
 	lineShader = std::make_unique<Shader>("Source/Shaders/LineVertexShader.hlsl", "Source/Shaders/LineFragmentShader.hlsl");
-
+	entity = Scene::Get()->entityRegistry->CreateEntity();
 	glGenVertexArrays(1, &VAO_line_renderer);
 	glGenBuffers(1, &VBO_line_color);
 	glGenBuffers(1, &VBO_line_coordinates);
@@ -32,8 +33,8 @@ void LineRenderer::DrawLines() {
 	auto& m_camera = m_scene.camera;
 	auto& registry = Scene::Get()->componentRegistry;
 
-	auto& line_coords = registry->GetComponentsByType<Line_Coordinates>();
-	auto& line_colors = registry->GetComponentsByType<Line_Color>();
+	auto& line_coords = registry->GetContainer<Line_Coordinates>().getVector();
+	auto& line_colors = registry->GetContainer<Line_Color>().getVector();
 
 	lineShader->Use();
 	lineShader->setMat4("uView", m_camera.view());
@@ -54,16 +55,16 @@ void LineRenderer::DrawLine(Vector3 A, Vector3 B, Vector3 color)
 	auto& registry = Scene::Get()->componentRegistry;
 	Line_Coordinates l_coords{ A,B };
 	Line_Color l_color{ color, color };
-
-	registry->RegisterComponent<Line_Coordinates>(l_coords);
-	registry->RegisterComponent<Line_Color>(l_color);
+	entity.AddComponent(l_coords);
+	entity.AddComponent(l_color);
 }
 
 void LineRenderer::DeleteLines()
 {
 	auto& registry = Scene::Get()->componentRegistry;
-	registry->DestroyComponents<Line_Coordinates>();
-	registry->DestroyComponents<Line_Color>();
+	registry->GetContainer<Line_Coordinates>().clear();
+	registry->GetContainer<Line_Color>().clear();
+	entity.ClearComponents();
 }
 
 

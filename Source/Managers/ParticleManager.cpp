@@ -4,20 +4,19 @@
 #include "Entity/entity.h"
 #include "Scene/scene.h"
 
-EntityRef ParticleManager::NewParticle()
+Entity ParticleManager::NewParticle()
 {
 	auto& m_scene = *Scene::Get();
-	EntityRef entity_ref = m_scene.entityRegistry->CreateEntity(*m_scene.componentRegistry);
-	auto& entity = entity_ref.getEntity();
-	entity.EmplaceComponent<Particle_Position>();
-	entity.EmplaceComponent<Particle_Radius>();
-	entity.EmplaceComponent<Particle_InverseMass>();
-	entity.EmplaceComponent<Particle_Velocity>();
-	entity.EmplaceComponent<Particle_Acceleration>();
-	entity.EmplaceComponent<Particle_Restitution>();
-	entity.EmplaceComponent<Particle_Friction>();
-	entity.EmplaceComponent<Particle_ID>(entity_ref.m_entityID);
-	return entity_ref;
+	Entity entity = m_scene.entityRegistry->CreateEntity();
+	entity.NewComponent<Particle_Position>();
+	entity.NewComponent<Particle_Radius>();
+	entity.NewComponent<Particle_InverseMass>();
+	entity.NewComponent<Particle_Velocity>();
+	entity.NewComponent<Particle_Acceleration>();
+	entity.NewComponent<Particle_Restitution>();
+	entity.NewComponent<Particle_Friction>();
+	entity.NewComponent<Particle_ID>(entity.m_id);
+	return entity;
 }
 
 // updates velocity based on acceleration and time
@@ -36,9 +35,9 @@ void ParticleManager::IntegrateVelocity(FP_LONG dt, Particle_Position& position,
 void ParticleManager::UpdateAllParticles(FP_LONG dt)
 {
 	auto& m_scene = *Scene::Get();
-	auto& velocities = m_scene.componentRegistry->GetComponentsByType<Particle_Velocity>();
-	auto& accelerations = m_scene.componentRegistry->GetComponentsByType<Particle_Acceleration>();
-	auto& positions = m_scene.componentRegistry->GetComponentsByType<Particle_Position>();
+	auto& velocities = m_scene.componentRegistry->GetContainer<Particle_Velocity>().getVector();
+	auto& accelerations = m_scene.componentRegistry->GetContainer<Particle_Acceleration>().getVector();
+	auto& positions = m_scene.componentRegistry->GetContainer<Particle_Position>().getVector();
 
 	if (velocities.size() != accelerations.size() || positions.size() != velocities.size())
 	{

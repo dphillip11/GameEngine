@@ -47,7 +47,7 @@ void GUI::DisplayHierarchy() {
 
 void GUI::DisplayEntities()
 {
-	auto& entities = Scene::Get()->entityRegistry->getHashMap();
+	auto& entities = Scene::Get()->entityRegistry->GetHashMap();
 	for (auto& entity : entities)
 	{
 		ImGui::Text(("Entity " + std::to_string(entity.first)).c_str());
@@ -62,17 +62,16 @@ void GUI::DisplayEntities()
 	}
 }
 
-void GUI::DisplayParticle(EntityRef entityRef)
+void GUI::DisplayParticle(Entity entity)
 {
-	auto& entity = entityRef.getEntity();
 	auto particle_positions = entity.GetComponents<Particle_Position>();
 	auto particle_radii = entity.GetComponents<Particle_Radius>();
 	auto particle_iMass = entity.GetComponents<Particle_InverseMass>();
 	for (int i = 0; i < particle_positions.size(); i++)
 	{
-		ImGui::DragFloat3("Position", &particle_positions[i].get().value.x);
-		ImGui::DragFloat("Radius", &particle_radii[i].get().value);
-		ImGui::DragFloat("Inverse Mass", &particle_iMass[i].get().value);
+		ImGui::DragFloat3("Position", &particle_positions[i]->value.x);
+		ImGui::DragFloat("Radius", &particle_radii[i]->value);
+		ImGui::DragFloat("Inverse Mass", &particle_iMass[i]->value);
 	}
 
 }
@@ -106,29 +105,26 @@ void GUI::DisplaySystemWindow()
 void GUI::DisplayInspectorWindow()
 {
 	ImGui::Begin("Inspector Window", &inspector_window);
-	if (Scene::Get()->entityRegistry->is_valid_key(inspectorID))
-	{
-		auto entity = Scene::Get()->entityRegistry->GetRef(inspectorID);
-		if (entity.getEntity().hasComponent<Particle_Position>())
-			DisplayParticle(entity);
-		if (entity.getEntity().hasComponent<SpringForce>() || entity.getEntity().hasComponent<GravityForce>())
-			DisplayForces(entity);
-	}
+	auto entity = Scene::Get()->entityRegistry->GetEntity(inspectorID);
+	if (entity.HasComponent<Particle_Position>())
+		DisplayParticle(entity);
+	if (entity.HasComponent<SpringForce>() || entity.HasComponent<GravityForce>())
+		DisplayForces(entity);
 	ImGui::End();
 }
 
-void GUI::DisplayForces(EntityRef entityRef)
+void GUI::DisplayForces(Entity entity)
 {
-	auto& entity = entityRef.getEntity();
+
 	auto spring_forces = entity.GetComponents<SpringForce>();
 	auto gravity_forces = entity.GetComponents<GravityForce>();
 	int index = 0;
 	for (auto& spring_force : spring_forces)
 	{
 		ImGui::PushID(index);
-		ImGui::DragFloat("Spring constant", &spring_force.get().m_springConstant);
-		ImGui::DragFloat("rest length", &spring_force.get().m_restLength);
-		ImGui::DragInt("other particle", &spring_force.get().m_other.m_entityID);
+		ImGui::DragFloat("Spring constant", &spring_force->m_springConstant);
+		ImGui::DragFloat("rest length", &spring_force->m_restLength);
+		ImGui::DragInt("other particle", &spring_force->m_other.m_id);
 		ImGui::PopID();
 		index++;
 	}
@@ -136,8 +132,8 @@ void GUI::DisplayForces(EntityRef entityRef)
 	if (ImGui::Selectable("Add SpringForce"))
 	{
 		SpringForce s;
-		s.m_other = Scene::Get()->entityRegistry->GetRef(2);
-		s.entity = entityRef;
+		s.m_other = Scene::Get()->entityRegistry->GetEntity(2);
+		s.entity = entity;
 		entity.AddComponent(s);
 	}
 }

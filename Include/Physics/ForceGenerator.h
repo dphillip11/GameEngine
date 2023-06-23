@@ -5,16 +5,16 @@
 
 namespace Forces {
 	extern void ApplyForces();
-	extern void ApplyGravityForce(EntityRef entity, const Vector3& gravity);
-	extern void ApplyConstantForce(EntityRef entity, const Vector3& force);
-	extern void ApplyDragForce(EntityRef entity, FP k1, FP k2);
-	extern void ApplySpringForce(EntityRef entity, EntityRef other, FP springConstant, FP restLength);
-	extern void ApplyBuoyantForce(EntityRef entity, FP surfaceLevel, FP liquidDensity);
+	extern void ApplyGravityForce(Entity entity, const Vector3& gravity);
+	extern void ApplyConstantForce(Entity entity, const Vector3& force);
+	extern void ApplyDragForce(Entity entity, FP k1, FP k2);
+	extern void ApplySpringForce(Entity entity, Entity other, FP springConstant, FP restLength);
+	extern void ApplyBuoyantForce(Entity entity, FP surfaceLevel, FP liquidDensity);
 }
 
 
 struct ForceGenerator {
-	EntityRef entity;
+	Entity entity;
 };
 
 struct GravityForce : ForceGenerator {
@@ -30,7 +30,7 @@ struct DragForce : ForceGenerator {
 };
 
 struct SpringForce : ForceGenerator {
-	EntityRef m_other;
+	Entity m_other;
 	FP m_springConstant = 1;
 	FP m_restLength = 1;
 };

@@ -18,9 +18,9 @@ CollisionDetection::CollisionDetection()
 void CollisionDetection::CheckParticleCollisions()
 {
 	auto& m_scene = *Scene::Get();
-	auto& positions = m_scene.componentRegistry->GetComponentsByType<Particle_Position>();
-	auto& radii = m_scene.componentRegistry->GetComponentsByType<Particle_Radius>();
-	auto& IDs = m_scene.componentRegistry->GetComponentsByType<Particle_ID>();
+	auto& positions = m_scene.componentRegistry->GetContainer<Particle_Position>().getVector();
+	auto& radii = m_scene.componentRegistry->GetContainer<Particle_Radius>().getVector();
+	auto& IDs = m_scene.componentRegistry->GetContainer<Particle_ID>().getVector();
 
 	auto number = positions.size();
 	if (number != radii.size())
@@ -44,8 +44,8 @@ void CollisionDetection::CheckParticleCollision(Particle_Position& A_pos, Partic
 		return;
 	ParticleContact contact;
 	contact.collisionNormal = CollisionVector.Normalise();
-	contact.particleA = Scene::Get()->entityRegistry->GetRef(ID_A);
-	contact.particleB = Scene::Get()->entityRegistry->GetRef(ID_B);
+	contact.particleA = Scene::Get()->entityRegistry->GetEntity(ID_A);
+	contact.particleB = Scene::Get()->entityRegistry->GetEntity(ID_B);
 	contact.penetration = distance - sumOfRadii;
 	m_contact_manager.RegisterContact(contact);
 }

@@ -1,7 +1,22 @@
 #pragma once
 #include "Geometry/Precision.h"
 #include "Geometry/Vector3.h"
+#include <cstring>
 
+////equality operator, TODO: consider this as a base class? 
+//struct Component {
+//	// ... other members and functions ...
+//
+//	// Declare the operator== inside the struct
+//	bool operator==(const Component& other) const {
+//		return (std::memcmp(this, &other, sizeof(Component)) == 0);
+//	}
+//};
+//
+//// Define the operator== outside the struct
+//bool operator==(const Component& lhs, const Component& rhs) {
+//	return (std::memcmp(&lhs, &rhs, sizeof(Component)) == 0);
+//}
 
 struct Particle_Friction
 {

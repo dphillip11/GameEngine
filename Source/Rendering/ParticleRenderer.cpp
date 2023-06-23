@@ -56,8 +56,8 @@ ParticleRenderer::ParticleRenderer()
 
 	//set up position and size buffers
 	auto& m_scene = *Scene::Get();
-	auto& particle_positions = m_scene.componentRegistry->GetComponentsByType<Particle_Position>();
-	auto& particle_sizes = m_scene.componentRegistry->GetComponentsByType<Particle_Radius>();
+	auto& particle_positions = m_scene.componentRegistry->GetContainer<Particle_Position>().getVector();
+	auto& particle_sizes = m_scene.componentRegistry->GetContainer<Particle_Radius>().getVector();
 
 	BufferManager::setVertices(particle_positions.data(), particle_positions.size(), VAO_particles, VBO_particle_position);
 	BufferManager::setAttributes(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(0));
@@ -73,8 +73,8 @@ void ParticleRenderer::DrawParticles()
 {
 	auto& m_scene = *Scene::Get();
 	auto& m_camera = m_scene.camera;
-	auto& particle_positions = m_scene.componentRegistry->GetComponentsByType<Particle_Position>();
-	auto& particle_sizes = m_scene.componentRegistry->GetComponentsByType<Particle_Radius>();
+	auto& particle_positions = m_scene.componentRegistry->GetContainer<Particle_Position>().getVector();
+	auto& particle_sizes = m_scene.componentRegistry->GetContainer<Particle_Radius>().getVector();
 	if (particle_positions.size() == 0)
 		return;
 	if (particle_positions.size() != particle_positions.size())

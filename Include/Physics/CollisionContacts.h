@@ -4,8 +4,8 @@
 
 struct ParticleContact
 {
-	EntityRef particleA;
-	EntityRef particleB;
+	Entity particleA;
+	Entity particleB;
 	FP penetration;
 	//direction of collision towards particle A
 	Vector3 collisionNormal;

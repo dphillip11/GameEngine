@@ -24,9 +24,9 @@ private:
 
 	void DisplayEntities();
 
-	void DisplayParticle(EntityRef entity);
+	void DisplayParticle(Entity entity);
 
-	void DisplayForces(EntityRef entityRef);
+	void DisplayForces(Entity entity);
 
 	void DisplayTransform(int id);
 

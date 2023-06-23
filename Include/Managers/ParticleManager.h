@@ -2,12 +2,12 @@
 #include "Geometry/Precision.h"
 #include "Components/Components.h"
 
-class EntityRef;
+class Entity;
 
 class ParticleManager
 {
 public:
-	EntityRef NewParticle();
+	Entity NewParticle();
 	// updates velocity based on acceleration and time
 	void IntegrateAcceleration(FP_LONG dt, Particle_Velocity& velocity, Particle_Acceleration& acceleration);
 	// update position based on velocity and time

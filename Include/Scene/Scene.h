@@ -47,7 +47,7 @@ public:
 	{
 		current = this;
 		componentRegistry = std::make_unique<ComponentRegistry>();
-		entityRegistry = std::make_unique<EntityRegistry>();
+		entityRegistry = std::make_unique<EntityRegistry>(*componentRegistry);
 		particleManager = std::make_unique<ParticleManager>();
 		collisionDetection = std::make_unique<CollisionDetection>();
 		particleRenderer = std::make_unique<ParticleRenderer>();
